@@ -37,6 +37,14 @@ class Redis implements Persister
     }
 
     /**
+     * @param int $size
+     */
+    public function setSize($size)
+    {
+        //it is not necessary for redis persister
+    }
+
+    /**
      * @param \Redis $redis
      * @param string $key
      */
@@ -82,9 +90,12 @@ class Redis implements Persister
         return $this->redis->getBit($this->key, $bit);
     }
 
+    /**
+     * @inheritdoc
+     */
     public function set($bit)
     {
-        return $this->redis->setBit($this->key, $bit, 1);
+        $this->redis->setBit($this->key, $bit, 1);
     }
 
 

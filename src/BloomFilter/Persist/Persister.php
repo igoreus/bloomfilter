@@ -2,8 +2,17 @@
 
 namespace Igoreus\BloomFilter\Persist;
 
+/**
+ * @author Igor Veremchuk igor.veremchuk@gmail.com
+ */
 interface Persister
 {
+
+    /**
+     * @param int $size
+     * @return void
+     */
+    public function setSize($size);
     /**
      * @param array $bits
      * @return array

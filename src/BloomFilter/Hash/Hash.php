@@ -1,6 +1,5 @@
 <?php
 
-
 namespace Igoreus\BloomFilter\Hash;
 
 interface Hash

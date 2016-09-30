@@ -30,7 +30,6 @@ class BloomFilter
         $bitSize = self::optimalBitSize($approximateSize, $falsePositiveProbability);
         $hashCount = self::optimalHashCount($approximateSize, $bitSize);
 
-
         return new self($persister, $bitSize, $hashCount);
     }
 
@@ -56,6 +55,19 @@ class BloomFilter
     public function add($value)
     {
         $this->persister->setBulk($this->getBits($value));
+    }
+
+    /**
+     * @param array $valueList
+     */
+    public function addBulk(array $valueList)
+    {
+        $bits = [];
+        foreach ($valueList as $value) {
+            $bits[] = $this->getBits($value);
+        }
+
+        $this->persister->setBulk(call_user_func_array('array_merge', $bits));
     }
 
     /**
@@ -113,6 +125,7 @@ class BloomFilter
      */
     private function hash(Hash $hash, $value, $index)
     {
-        return crc32($hash->hash($value . $index)) % $this->size;
+        $res = crc32($hash->hash($value . $index)) % $this->size;
+        return $res;
     }
 }

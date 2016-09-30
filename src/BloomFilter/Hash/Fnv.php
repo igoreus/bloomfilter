@@ -1,11 +1,12 @@
 <?php
 
-
 namespace Igoreus\BloomFilter\Hash;
 
+/**
+ * @author Igor Veremchuk igor.veremchuk@gmail.com
+ */
 class Fnv implements Hash
 {
-
     /**
      * @inheritdoc
      */
