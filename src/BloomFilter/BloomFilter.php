@@ -25,11 +25,22 @@ class BloomFilter
      * @param float $falsePositiveProbability
      * @return BloomFilter
      */
-    public static function create(Persister $persister, $approximateSize, $falsePositiveProbability = 0.001)
+    public static function createFromApproximateSize(Persister $persister, $approximateSize, $falsePositiveProbability = 0.001)
     {
         $bitSize = self::optimalBitSize($approximateSize, $falsePositiveProbability);
         $hashCount = self::optimalHashCount($approximateSize, $bitSize);
 
+        return new self($persister, $bitSize, $hashCount);
+    }
+
+    /**
+     * @param Persister $persister
+     * @param int $bitSize
+     * @param int $hashCount
+     * @return BloomFilter
+     */
+    public static function create($persister, $bitSize, $hashCount)
+    {
         return new self($persister, $bitSize, $hashCount);
     }
 
@@ -102,7 +113,7 @@ class BloomFilter
      * @param float $falsePositiveProbability
      * @return int
      */
-    private static function optimalBitSize($setSize, $falsePositiveProbability = 0.001)
+    public static function optimalBitSize($setSize, $falsePositiveProbability = 0.001)
     {
         return (int) round((($setSize * log($falsePositiveProbability)) / pow(log(2), 2)) * -1);
     }
@@ -112,7 +123,7 @@ class BloomFilter
      * @param int $bitSize
      * @return int
      */
-    private static function optimalHashCount($setSize, $bitSize)
+    public static function optimalHashCount($setSize, $bitSize)
     {
         return (int) round(($bitSize / $setSize) * log(2));
     }
@@ -125,7 +136,6 @@ class BloomFilter
      */
     private function hash(Hash $hash, $value, $index)
     {
-        $res = crc32($hash->hash($value . $index)) % $this->size;
-        return $res;
+        return crc32($hash->hash($value . $index)) % $this->size;
     }
 }

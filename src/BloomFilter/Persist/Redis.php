@@ -37,14 +37,6 @@ class Redis implements Persister
     }
 
     /**
-     * @param int $size
-     */
-    public function setSize($size)
-    {
-        //it is not necessary for redis persister
-    }
-
-    /**
      * @param \Redis $redis
      * @param string $key
      */

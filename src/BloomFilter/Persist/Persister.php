@@ -7,12 +7,6 @@ namespace Igoreus\BloomFilter\Persist;
  */
 interface Persister
 {
-
-    /**
-     * @param int $size
-     * @return void
-     */
-    public function setSize($size);
     /**
      * @param array $bits
      * @return array

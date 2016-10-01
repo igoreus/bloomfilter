@@ -5,43 +5,33 @@ namespace Igoreus\BloomFilter\Persist;
 /**
  * @author Igor Veremchuk igor.veremchuk@gmail.com
  */
-class BitArray implements Persister
+class BitString implements Persister
 {
     const BITS_IN_BYTE = 8;
-    /** @var int */
-    private $size;
+    const DEFAULT_SIZE = 1024;
+
     /** @var string */
     private $bytes;
+    /** @var int */
+    private $size;
+
 
     /**
-     * @param int $size
+     * @param string $str
+     * @return BitString
      */
-    public function setSize($size)
+    public static function createFromString($str)
     {
-        $this->size = (int) $size;
-        if ($this->size  < 0) {
-            throw new \RangeException('Value must be greater than zero.');
-        }
-
-        $this->bytes = str_repeat(chr(0), $this->size);
+        $instance = new self();
+        $instance->bytes = $str;
+        $instance->size = strlen($str);
+        return $instance;
     }
 
-    /**
-     * @param int $value
-     */
-    private function assertOffset($value)
+    public function __construct()
     {
-        if (null == $this->bytes) {
-            throw new \LogicException('Size must be set.');
-        }
-
-        if (!is_int($value)) {
-            throw new \UnexpectedValueException('Value must be an integer.');
-        }
-
-        if ($value < 0) {
-            throw new \RangeException('Value must be greater than zero.');
-        }
+        $this->size = self::DEFAULT_SIZE;
+        $this->bytes = str_repeat(chr(0), $this->size);
     }
 
     /**
@@ -72,7 +62,6 @@ class BitArray implements Persister
      */
     public function get($bit)
     {
-        $this->assertOffset($bit);
         $byte = $this->offsetToByte($bit);
         $byte = ord($this->bytes[$byte]);
         $bit = (bool) ($this->bitPos($bit) & $byte);
@@ -85,7 +74,6 @@ class BitArray implements Persister
      */
     public function set($bit)
     {
-        $this->assertOffset($bit);
         $offsetByte = $this->offsetToByte($bit);
         $byte = ord($this->bytes[$offsetByte]);
         $pos = $this->bitPos($bit);
@@ -95,12 +83,42 @@ class BitArray implements Persister
     }
 
     /**
+     * @return string
+     */
+    public function toString()
+    {
+        return $this->bytes;
+    }
+
+    /**
+     * @param int $value
+     */
+    private function assertOffset($value)
+    {
+        if (!is_int($value)) {
+            throw new \UnexpectedValueException('Value must be an integer.');
+        }
+
+        if ($value < 0) {
+            throw new \RangeException('Value must be greater than zero.');
+        }
+    }
+
+    /**
      * @param int $offset
      * @return int
      */
     private function offsetToByte($offset)
     {
-        return (int) floor($offset / self::BITS_IN_BYTE);
+        $this->assertOffset($offset);
+        $byte = (int) floor($offset / self::BITS_IN_BYTE);
+
+        if ($this->size < $byte) {
+            $this->bytes .= str_repeat(chr(0), $byte - $this->size + self::DEFAULT_SIZE);
+            $this->size = strlen($this->bytes);
+        }
+
+        return $byte;
     }
 
     /**
