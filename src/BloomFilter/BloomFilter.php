@@ -93,6 +93,36 @@ class BloomFilter
     }
 
     /**
+     * m = ceil((n * log(p)) / log(1.0 / (pow(2.0, log(2.0)))));
+     * m - Number of bits in the filter
+     * n - Number of items in the filter
+     * p - Probability of false positives, float between 0 and 1 or a number indicating 1-in-p
+     *
+     * @param int $setSize
+     * @param float $falsePositiveProbability
+     * @return int
+     */
+    public static function optimalBitSize($setSize, $falsePositiveProbability = 0.001)
+    {
+        return (int) round((($setSize * log($falsePositiveProbability)) / pow(log(2), 2)) * -1);
+    }
+
+    /**
+     * k = round(log(2.0) * m / n);
+     * k - Number of hash functions
+     * m - Number of bits in the filter
+     * n - Number of items in the filter
+     *
+     * @param int $setSize
+     * @param int $bitSize
+     * @return int
+     */
+    public static function optimalHashCount($setSize, $bitSize)
+    {
+        return (int) round(($bitSize / $setSize) * log(2));
+    }
+
+    /**
      * @param string $value
      * @return array
      */
@@ -105,27 +135,6 @@ class BloomFilter
         }
 
         return $bits;
-    }
-
-
-    /**
-     * @param int $setSize
-     * @param float $falsePositiveProbability
-     * @return int
-     */
-    public static function optimalBitSize($setSize, $falsePositiveProbability = 0.001)
-    {
-        return (int) round((($setSize * log($falsePositiveProbability)) / pow(log(2), 2)) * -1);
-    }
-
-    /**
-     * @param int $setSize
-     * @param int $bitSize
-     * @return int
-     */
-    public static function optimalHashCount($setSize, $bitSize)
-    {
-        return (int) round(($bitSize / $setSize) * log(2));
     }
 
     /**

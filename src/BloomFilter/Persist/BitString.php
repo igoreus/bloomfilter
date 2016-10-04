@@ -66,7 +66,7 @@ class BitString implements Persister
         $byte = ord($this->bytes[$byte]);
         $bit = (bool) ($this->bitPos($bit) & $byte);
 
-        return $bit;
+        return (int) $bit;
     }
 
     /**
@@ -113,7 +113,7 @@ class BitString implements Persister
         $this->assertOffset($offset);
         $byte = (int) floor($offset / self::BITS_IN_BYTE);
 
-        if ($this->size < $byte) {
+        if ($this->size <= $byte) {
             $this->bytes .= str_repeat(chr(0), $byte - $this->size + self::DEFAULT_SIZE);
             $this->size = strlen($this->bytes);
         }

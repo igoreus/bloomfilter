@@ -54,6 +54,7 @@ class Redis implements Persister
         $pipe = $this->redis->pipeline();
 
         foreach ($bits as $bit) {
+            $this->assertOffset($bit);
             $pipe->getBit($this->key, $bit);
         }
 
@@ -68,6 +69,7 @@ class Redis implements Persister
         $pipe = $this->redis->pipeline();
 
         foreach ($bits as $bit) {
+            $this->assertOffset($bit);
             $pipe->setBit($this->key, $bit, 1);
         }
 
@@ -79,6 +81,7 @@ class Redis implements Persister
      */
     public function get($bit)
     {
+        $this->assertOffset($bit);
         return $this->redis->getBit($this->key, $bit);
     }
 
@@ -87,7 +90,22 @@ class Redis implements Persister
      */
     public function set($bit)
     {
+        $this->assertOffset($bit);
         $this->redis->setBit($this->key, $bit, 1);
+    }
+
+    /**
+     * @param int $value
+     */
+    private function assertOffset($value)
+    {
+        if (!is_int($value)) {
+            throw new \UnexpectedValueException('Value must be an integer.');
+        }
+
+        if ($value < 0) {
+            throw new \RangeException('Value must be greater than zero.');
+        }
     }
 
 

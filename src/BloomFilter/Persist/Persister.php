@@ -9,7 +9,7 @@ interface Persister
 {
     /**
      * @param array $bits
-     * @return array
+     * @return int[]
      */
     public function getBulk(array $bits);
 
