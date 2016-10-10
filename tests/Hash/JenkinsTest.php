@@ -2,18 +2,18 @@
 
 namespace Igoreus\BloomFilter\Test\Hash;
 
-use Igoreus\BloomFilter\Hash\Fnv;
+use Igoreus\BloomFilter\Hash\Jenkins;
 
-class FnvTest extends \PHPUnit_Framework_TestCase
+class JenkinsTest extends \PHPUnit_Framework_TestCase
 {
     /**
      * @test
      */
     public function hash()
     {
-        $hash = new Fnv();
+        $hash = new Jenkins();
         $value = 'test value';
-        $expected =  hexdec(hash('fnv132', $value));
+        $expected = '4b9f03c9478b2ae8';
 
         $this->assertEquals($expected, $hash->hash($value));
     }

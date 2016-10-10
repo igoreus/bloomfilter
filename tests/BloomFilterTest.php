@@ -102,7 +102,7 @@ class BloomFilterTest extends \PHPUnit_Framework_TestCase
         $persister->expects($this->once())
             ->method('setBulk')
             ->willReturn(1)
-            ->with([687, 549, 20]); //calculated bits for hashes
+            ->with([687, 549, 684]); //calculated bits for hashes
 
         $filter = new BloomFilter($persister, 1024, 3);
         $filter->add('testString');
@@ -117,7 +117,7 @@ class BloomFilterTest extends \PHPUnit_Framework_TestCase
         $persister->expects($this->once())
             ->method('setBulk')
             ->willReturn(1)
-            ->with([ 572, 177, 397, 128, 451, 918, 905, 698, 87]); //calculated bits for hashes
+            ->with([ 572, 177, 442, 128, 451, 157, 905, 698, 186]); //calculated bits for hashes
 
         $filter = new BloomFilter($persister, 1024, 3);
         $filter->addBulk(
@@ -137,11 +137,11 @@ class BloomFilterTest extends \PHPUnit_Framework_TestCase
         $persister->expects($this->once())
             ->method('setBulk')
             ->willReturn(1)
-            ->with([687, 549, 20]); //calculated bits for hashes
+            ->with([687, 549, 684]); //calculated bits for hashes
         $persister->expects($this->once())
             ->method('getBulk')
             ->willReturn([1, 1, 1])
-            ->with([687, 549, 20]); //calculated bits for hashes
+            ->with([687, 549, 684]); //calculated bits for hashes
 
         $filterForSet = new BloomFilter($persister, 1024, 3);
         $filterForSet->add('testString');
@@ -159,11 +159,11 @@ class BloomFilterTest extends \PHPUnit_Framework_TestCase
         $persister->expects($this->once())
             ->method('setBulk')
             ->willReturn(1)
-            ->with([1008, 193, 843]); //calculated bits for hashes
+            ->with([1008, 193, 573]); //calculated bits for hashes
         $persister->expects($this->once())
             ->method('getBulk')
             ->willReturn([1, 0, 1])
-            ->with([682, 79, 873]); //calculated bits for hashes
+            ->with([682, 79, 401]); //calculated bits for hashes
 
         $filterForSet = new BloomFilter($persister, 1024, 3);
         $filterForSet->add('test String');

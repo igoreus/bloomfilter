@@ -2,18 +2,18 @@
 
 namespace Igoreus\BloomFilter\Test\Hash;
 
-use Igoreus\BloomFilter\Hash\Fnv;
+use Igoreus\BloomFilter\Hash\Murmur;
 
-class FnvTest extends \PHPUnit_Framework_TestCase
+class MurmurTest extends \PHPUnit_Framework_TestCase
 {
     /**
      * @test
      */
     public function hash()
     {
-        $hash = new Fnv();
+        $hash = new Murmur();
         $value = 'test value';
-        $expected =  hexdec(hash('fnv132', $value));
+        $expected = 932882152;
 
         $this->assertEquals($expected, $hash->hash($value));
     }

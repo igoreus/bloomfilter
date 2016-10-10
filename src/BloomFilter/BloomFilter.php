@@ -17,44 +17,63 @@ class BloomFilter
     /** @var Hash[]  */
     private $hashes;
     /** @var array */
-    private $availableHashes = ['Crc32b', 'Fnv'];
+    private $availableHashes = ['Crc32b', 'Fnv', 'Jenkins', 'Murmur'];
 
     /**
      * @param Persister $persister
      * @param int $approximateSize
      * @param float $falsePositiveProbability
+     * @param array $hashFunctions
      * @return BloomFilter
      */
-    public static function createFromApproximateSize(Persister $persister, $approximateSize, $falsePositiveProbability = 0.001)
-    {
-        $bitSize = self::optimalBitSize($approximateSize, $falsePositiveProbability);
+    public static function createFromApproximateSize(
+        Persister $persister,
+        $approximateSize,
+        $falsePositiveProbability = 0.001,
+        array $hashFunctions = []
+    ) {
+        if ($falsePositiveProbability<= 0 || $falsePositiveProbability >=1) {
+            throw new \RangeException('False positive probability must be between 0 and 1');
+        }
+
+        $bitSize = self::optimalBitSize((int) $approximateSize, $falsePositiveProbability);
         $hashCount = self::optimalHashCount($approximateSize, $bitSize);
 
-        return new self($persister, $bitSize, $hashCount);
+        return new self($persister, $bitSize, $hashCount, $hashFunctions);
     }
 
     /**
      * @param Persister $persister
      * @param int $bitSize
      * @param int $hashCount
+     * @param array $hashFunctions
      * @return BloomFilter
      */
-    public static function create($persister, $bitSize, $hashCount)
+    public static function create($persister, $bitSize, $hashCount, array $hashFunctions = [])
     {
-        return new self($persister, $bitSize, $hashCount);
+        return new self($persister, $bitSize, $hashCount, $hashFunctions);
     }
 
     /**
      * @param Persister $persister
      * @param int $size
      * @param int $hashCount
+     * @param array $hashFunctions
      */
-    public function __construct(Persister $persister, $size, $hashCount)
+    public function __construct(Persister $persister, $size, $hashCount, array $hashFunctions = [])
     {
+        $hashFunctions = !empty($hashFunctions) ? $hashFunctions : $this->availableHashes;
+
+        if (!array_intersect($this->availableHashes, $hashFunctions)) {
+            throw new \LogicException(
+                sprintf('One or more of functions (%s) are not available', join(',', $hashFunctions))
+            );
+        }
+
         $this->persister = $persister;
         $this->size = $size;
         for ($i = 0; $i < $hashCount; $i++) {
-            $hash = $this->availableHashes[$i % count($this->availableHashes)];
+            $hash = $hashFunctions[$i % count($hashFunctions)];
             $className = 'Igoreus\\BloomFilter\\Hash\\' . $hash;
             $this->hashes[] = new $className;
         }
