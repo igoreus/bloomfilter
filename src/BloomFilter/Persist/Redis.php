@@ -12,9 +12,9 @@ class Redis implements Persister
     const DEFAULT_DB = 0;
     const DEFAULT_KEY = 'bloom_filter';
     /** @var string */
-    private $key;
+    protected $key;
     /** @var \Redis */
-    private $redis;
+    protected $redis;
 
     /**
      * @param array $params
