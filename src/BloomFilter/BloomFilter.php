@@ -2,20 +2,25 @@
 
 namespace Igoreus\BloomFilter;
 
+use Igoreus\BloomFilter\Algo\BloomFilter as BloomFilterInterface;
 use Igoreus\BloomFilter\Hash\Hash;
 use Igoreus\BloomFilter\Persist\Persister;
 
 /**
  * @author Igor Veremchuk igor.veremchuk@gmail.com
  */
-class BloomFilter
+class BloomFilter implements BloomFilterInterface
 {
     /** @var int */
     private $size;
+
     /** @var Persister */
+
     private $persister;
+
     /** @var Hash[]  */
     private $hashes;
+
     /** @var array */
     private $availableHashes = ['Crc32b', 'Fnv', 'Jenkins', 'Murmur'];
 
@@ -32,7 +37,7 @@ class BloomFilter
         $falsePositiveProbability = 0.001,
         array $hashFunctions = []
     ) {
-        if ($falsePositiveProbability<= 0 || $falsePositiveProbability >=1) {
+        if ($falsePositiveProbability <= 0 || $falsePositiveProbability >= 1) {
             throw new \RangeException('False positive probability must be between 0 and 1');
         }
 

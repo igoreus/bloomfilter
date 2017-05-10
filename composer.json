@@ -7,6 +7,15 @@
             "email": "igor.veremchuk@gmail.com"
         }
     ],
+    "repositories": [
+        {
+            "type": "vcs",
+            "url": "https://github.com//igoreus/credis"
+        }
+    ],
+    "require": {
+        "colinmollenhour/credis": "dev-redis-module"
+    },
     "require-dev": {
         "phpunit/phpunit": "^4.6"
     },

@@ -11,8 +11,10 @@ class Redis implements Persister
     const DEFAULT_PORT = 6379;
     const DEFAULT_DB = 0;
     const DEFAULT_KEY = 'bloom_filter';
+
     /** @var string */
     protected $key;
+
     /** @var \Redis */
     protected $redis;
 
